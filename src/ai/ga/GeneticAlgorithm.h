@@ -11,8 +11,10 @@ namespace GA
 	  public:
 		void run();
 
-	  protected:
+	  private:
 		static const GA_Int ARRAY_SIZE = 65535;
+
+	  protected:
 		GA_Int populationSize{};
 		GA_Int genePoolSize{};
 		GA_Int eliteCount{};
@@ -31,6 +33,7 @@ namespace GA
 
 		T rollForParent(T a, T b) const { return std::rand() % 2 == 0 ? a : b; };
 		bool rollForMutation() const { return std::rand() % 10000 / 10000 < mutationChance; };
+		int getCurrentBestFitness() const { return fitnesses[sortedIndexes[0]]; };
 
 		GeneticAlgorithm(
 			GA_Int populationSize,

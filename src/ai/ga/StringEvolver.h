@@ -1,9 +1,12 @@
-#include <cstdlib>
 #include <array>
+#include <cstdlib>
+#include <iostream>
 
 #include "GeneticAlgorithm.cpp"
 
 using std::array;
+using std::cout;
+using std::endl;
 using std::string;
 
 namespace GA
@@ -14,14 +17,16 @@ namespace GA
 	class StringEvolver: public GeneticAlgorithm<String>
 	{
 	  private:
-		static char getRandomChar() { return (char) (32 + rand() % 95); };
+		string targetString;
+		StringIndex targetStringSize;
+
+		static char getRandomChar();
+
 		String createIndividual() const override;
 		String createIndividual(String, String) const override;
 		int testFitness(String) const override;
 		bool terminateCondition(int fitness) const override;
-
-		string targetString;
-		StringIndex targetStringSize;
+		void print() const override;
 
 	  public:
 		explicit StringEvolver(

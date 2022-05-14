@@ -40,6 +40,8 @@ namespace GA
 			for (int i = 0; i < genePoolSize; i++)
 				genePool[i] = individuals[sortedIndexes[i]];
 
+			print();
+
 			for (int i = 0; i < eliteCount; i++)
 			{
 				individuals[i] = genePool[i];

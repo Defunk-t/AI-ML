@@ -15,6 +15,11 @@ namespace GA
 		run();
 	};
 
+	char StringEvolver::getRandomChar()
+	{
+		return (char) (32 + rand() % 95);
+	};
+
 	String StringEvolver::createIndividual() const
 	{
 		String s;
@@ -45,5 +50,22 @@ namespace GA
 	bool StringEvolver::terminateCondition(int fitness) const
 	{
 		return fitness == 0;
+	};
+
+	void StringEvolver::print() const
+	{
+		if (generationCount % 10000 == 0)
+		{
+			cout << "Generation: " << generationCount << endl << "Best fitness: " << getCurrentBestFitness() << endl;
+
+			for (int i = 0; i < 5 && i < genePoolSize; i++)
+			{
+				for (StringIndex j = 0; j < targetStringSize; j++)
+					cout << genePool[i][j];
+				cout << "\t";
+			}
+
+			cout << endl << endl;
+		}
 	};
 };
