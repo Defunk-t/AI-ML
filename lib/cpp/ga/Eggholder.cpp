@@ -1,4 +1,4 @@
-#include "GAEggholder.h"
+#include "Eggholder.h"
 
 namespace GA
 {
@@ -10,7 +10,7 @@ namespace GA
 		generatePopulation();
 		printPopulation();
 	}
-	GAIndex Eggholder::getPos(GAIndex individual, GAIndex bit)
+	GAIndex Eggholder::getPos(GAIndex individual, GAIndex bit) const
 	{
 		return bits * individual + bit;
 	}

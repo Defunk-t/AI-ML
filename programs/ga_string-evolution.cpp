@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "ai/ga/StringEvolver.cpp"
+#include "../lib/cpp/ga/StringEvolver.cpp"
 
 int main()
 {

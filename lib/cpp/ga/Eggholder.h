@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <iostream>
-#include <limits>
+//#include <limits>
 
 typedef unsigned int GAIndex;
 
@@ -18,6 +18,6 @@ namespace GA
 			GAIndex bits, populationSize;
 			void generatePopulation();
 			void printPopulation();
-			GAIndex getPos(GAIndex individual, GAIndex bit);
+			GAIndex getPos(GAIndex individual, GAIndex bit) const;
 	};
 }
