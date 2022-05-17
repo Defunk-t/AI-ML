@@ -6,4 +6,5 @@ cmake-build-debug/
 .vs/
 out/
 
-datasets/
+/datasets/*
+!/datasets/README.txt

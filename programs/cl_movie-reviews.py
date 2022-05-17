@@ -13,6 +13,7 @@ BATCH_SIZE = 32
 SEED = 42
 VALIDATION_SPLIT = 0.2
 MAX_TOKENS = 10000
+EPOCHS = 50
 
 #
 # DOWNLOAD DATASET
@@ -20,10 +21,10 @@ MAX_TOKENS = 10000
 
 # Download
 dataset = tf.keras.utils.get_file(
-    'aclImdb_v1',
-    "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz",
-    untar=True,
-    cache_dir='../'
+    origin="https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz",
+    extract=True,
+    cache_dir='../datasets',
+    cache_subdir=''
 )
 
 # Set paths
@@ -75,9 +76,9 @@ def standardise(data):
     return tf.strings.regex_replace(
         tf.strings.regex_replace(
             tf.strings.lower(data),
-            '<br />', ' '
+            "<br />", " "
         ),
-        '[%s]' % re.escape(string.punctuation), ''
+        "[%s]" % re.escape(string.punctuation), ""
     )
 
 
@@ -136,11 +137,18 @@ model.compile(
     metrics=tf.metrics.BinaryAccuracy(threshold=0.0)
 )
 
+# Reduce over-training by monitoring for increase to val_loss
+callback = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss',
+    patience=2
+)
+
 # Train or 'fit' the model
 model_history = model.fit(
     training_data_v,
     validation_data=validation_data_v,
-    epochs=10
+    epochs=EPOCHS,
+    callbacks=[callback]
 )
 
 #
@@ -160,19 +168,49 @@ val_loss = model_history.history['val_loss']
 epochs = range(1, len(acc) + 1)
 
 # Plot and show loss across epochs
-pyplot.plot(epochs, loss, 'bo', label='Training loss')
-pyplot.plot(epochs, val_loss, 'b', label='Validation loss')
-pyplot.title('Training and validation loss')
-pyplot.xlabel('Epochs')
-pyplot.ylabel('Loss')
+pyplot.plot(epochs, loss, 'bo', label="Training loss")
+pyplot.plot(epochs, val_loss, 'b', label="Validation loss")
+pyplot.title("Training and validation loss")
+pyplot.xlabel("Epochs")
+pyplot.ylabel("Loss")
 pyplot.legend()
 pyplot.show()
 
 # Plot and show accuracy across epochs
-pyplot.plot(epochs, acc, 'bo', label='Training acc')
-pyplot.plot(epochs, val_acc, 'b', label='Validation acc')
-pyplot.title('Training and validation accuracy')
-pyplot.xlabel('Epochs')
-pyplot.ylabel('Accuracy')
+pyplot.plot(epochs, acc, 'bo', label="Training acc")
+pyplot.plot(epochs, val_acc, 'b', label="Validation acc")
+pyplot.title("Training and validation accuracy")
+pyplot.xlabel("Epochs")
+pyplot.ylabel("Accuracy")
 pyplot.legend(loc='lower right')
 pyplot.show()
+
+#
+# EXPORT MODEL
+#
+
+# Create another model with the pre-processing "built in"
+print("Creating and testing export model...")
+
+final_model = tf.keras.Sequential([
+    vectorised_layer,
+    model,
+    tf.keras.layers.Activation('sigmoid')
+])
+
+final_model.compile(
+    loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+    optimizer='adam',
+    metrics=['accuracy']
+)
+
+# Test it with raw unprocessed data
+loss, accuracy = final_model.evaluate(test_data)
+
+print("Accuracy: ", math.floor(accuracy * 1000) / 10)
+
+# Test it with made up data
+print(final_model.predict([
+    "I thoroughly enjoyed the movie!",
+    "What a terrible movie!"
+]))
