@@ -8,3 +8,5 @@ out/
 
 /datasets/*
 !/datasets/README.txt
+/models/*
+!/models/README.txt
